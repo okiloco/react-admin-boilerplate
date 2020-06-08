@@ -68,7 +68,9 @@ const Avatar = ({ source, size = "default", type = "cover", record, src, shape =
     let value;
     if (record && source) {
         value = record[source];
-        value = typeof record[source] == "object" ? record[source][props.name || "path"] : record[source];
+        value = typeof record[source] == "object" ?
+            record[source] ?
+                record[source][props.name || "path"] : record[source] : undefined;
     }
     useEffect(() => {
         let url =
