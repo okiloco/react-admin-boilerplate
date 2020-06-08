@@ -1,0 +1,12 @@
+:root{
+    --primary-color:#FD5D56;
+    --color-gray:#9c9c9c;
+    --color-white:#fff;
+    --color-gray-1:rgba(215, 215, 215, 0.87);
+    --color-gray-2:rgba(69, 49, 49, 0.4);
+    --color-gray-ligth:#3E4545;
+    --color-gray-dark:rgba(69, 90, 100, 0.3);
+    --color-light:rgb(255, 255, 255);
+    --color-dark:rgba(0,0,0,.65);
+    --sidebar-bg:var(--color-light);
+}

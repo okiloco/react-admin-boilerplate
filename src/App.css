@@ -1,0 +1,145 @@
+
+.App {
+    text-align: center;
+}
+
+.App-logo {
+    height: 40vmin;
+    pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+        animation: App-logo-spin infinite 20s linear;
+    }
+}
+
+.App-header {
+    background-color: #282c34;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+}
+
+.App-link {
+    color: #61dafb;
+}
+.RaSelectInput-input-421{
+   /*  min-width: 200px!important; */
+}
+
+/* .showEditSimpleLayout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+} */
+
+/* .ant-select-dropdown-hidden {
+    display: block!important;
+} */
+
+.ant-select-tree-node-content-wrapper-normal {
+    padding: 10px 5px!important;
+}
+
+.ant-select-tree .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected {
+    background-color: rgba(0, 0, 0, 0.08)!important;
+}
+.ant-select-tree li .ant-select-tree-node-content-wrapper:hover {
+    background-color: rgba(0, 0, 0, 0.1)!important;
+}
+.ant-select-allow-clear .ant-select-selection--multiple .ant-select-selection__rendered, .ant-select-show-arrow .ant-select-selection--multiple .ant-select-selection__rendered{
+    padding: 5px!important;
+}
+.ant-select-tree{
+    padding: 4px!important;
+}
+/* .ant-select-selection{
+    height: 50px!important;
+} */
+.ant-select-open .ant-select-selection,
+.ant-select-show-arrow .ant-select-selection--multiple .ant-select-selection__rendered{
+    padding: 0px!important;
+}
+.ant-select-open .ant-select-selection,
+.ant-select-tree li .ant-select-tree-node-content-wrapper.ant-select-tree-node-selected,
+.ant-select-tree-node-content-wrapper.ant-select-tree-node-content-wrapper-open,
+.ant-select-tree-node-content-wrapper-close,
+.ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active,
+.ant-select-open .ant-select-selection
+{
+    box-shadow: none!important;
+}
+.ant-select-lg .ant-select-selection--multiple .ant-select-selection__rendered .ant-select-selection__choice{
+    border-radius: 20px!important;
+    background: #e0e0e0!important;
+    padding-right: 20px!important;
+}
+.ant-select-tree li span.ant-select-tree-switcher.ant-select-tree-switcher-noop{
+    display: none!important;
+}
+.ant-select-selection.ant-select-selection--multiple{
+    height: auto!important;
+}
+.ant-select-tree li {
+    margin: 4px 0!important;
+}
+.MuiFormControl-marginDense {
+    padding: 5px !important;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.table-operations{
+    margin: 10px;
+    justify-content: space-between;
+    display: flex;
+}
+
+.MuiListItem-button .MuiSvgIcon-root{
+    width: 2em!important;
+}
+
+
+.video-react .video-react-big-play-button{
+    top:auto!important;
+    left:auto!important;
+    position:relative!important;
+}
+
+
+.video-react{
+  /*   width: calc(100% - 30px)!important; */
+    height: 200px!important;
+    margin: 10px 0px!important;
+    /* padding: 10px!important; */
+
+    display: flex!important;
+    justify-content: center!important;
+    align-items: center!important;
+}
+.video-react .video-react-control-text{
+    display:none!important;
+}
+.video-react .video-react-big-play-button{
+    top:auto!important;
+    left:auto!important;
+    position:relative!important;
+}
+/* ocultar dropzone de Filefield */
+/* .file-input div[data-testid="dropzone"],
+.file-input .previews > div > button
+{
+    display: none!important;
+} */

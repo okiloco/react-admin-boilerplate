@@ -1,0 +1,109 @@
+
+@import "./scroll-bar.css";
+@import "./vars.css";
+.MuiAppBar-colorSecondary {
+    color: #fff !important;
+    background-color: var(--primary-color)!important;
+}
+.MuiMenuItem-root{
+    color: #9c9c9c !important;
+}
+
+.MuiDrawer-root.MuiDrawer-docked.sidebar {
+    background: #3E4545 !important;
+    min-height: 100vh !important;
+}
+
+.MuiDrawer-root svg {
+    color: #9c9c9c !important;
+}
+
+p.MuiTypography-root.MuiListItemText-secondary.MuiTypography-body2.MuiTypography-colorTextSecondary.MuiTypography-displayBlock {
+    color: #9c9c9c !important;
+}
+
+
+span.MuiTypography-root.MuiListItemText-primary.MuiTypography-body2.MuiTypography-displayBlock {
+    color: #9c9c9c !important;
+}
+
+a.MuiButtonBase-root.MuiListItem-root.MuiMenuItem-root.menuItems.MuiMenuItem-gutters.MuiListItem-dense.MuiMenuItem-dense.MuiListItem-gutters.MuiListItem-button {
+    color: #9c9c9c !important;
+}
+.RaListToolbar-actions-212,
+.MuiToolbar-regular
+{
+    min-height: 0px!important;
+    padding-top: 0px!important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #3E4545 !important;
+}
+ /* Theme Plus */
+
+.MuiTableRow-root .link{
+    display: block;
+    opacity: 0.6;
+    transition: 0.3s;
+    visibility: hidden!important;
+}
+.MuiTableRow-hover:hover{
+    background-color: rgba(0, 0, 244, 0.02)!important;
+}
+
+.MuiTableRow-root .MuiButton-root:hover{
+    background: transparent!important;
+}
+.dinamic-list .MuiTableRow-root .MuiButton-root .MuiButton-label {
+    max-width: 30px!important;
+}
+.dinamic-list .MuiTableRow-root .MuiButton-root{
+    padding: 0px!important;
+    margin: 0px!important;
+    max-width: 30px!important;
+    display: block!important;
+}
+.MuiTableRow-hover:hover .link{
+    visibility: visible!important;
+    opacity: 1;
+
+    /* transform: scale(1.2)!important; */
+}
+.MuiTableRow-hover:hover .link{
+    border-radius:50%;
+    background-color: rgba(0, 0, 0, 0.04);
+}
+.dinamic-list .column-undefined{
+    width: 40px!important;
+}
+.dinamic-drawer .MuiDrawer-paperAnchorRight{
+    max-width: 500px!important;
+}
+
+/* layout container */
+.layout-content{
+    background: var(--color-white)!important;
+    min-height: 600px!important;
+    height: auto!important;
+    display: block!important;
+    /* padding: 10px!important; */
+    position: relative!important;
+    border-radius: 4px!important;
+    padding: 10px!important;
+    overflow-x: hidden!important;
+
+    box-shadow: var(--color-gray-dark) 0px 2px 10px -1px!important;
+    transform: translateY(-120px);
+    margin: 20px;
+}
+.sidebar .MuiButtonBase-root{
+    color: var(--color-gray);
+    line-height: 40px !important;
+    border-radius: 0.25rem 0 0 0.25rem!important;
+    padding: 7px 0px 7px 10px !important;
+    margin: 0px 0px 10px 10px !important;
+}
+.ant-select-selection {
+    height: auto!important;
+}

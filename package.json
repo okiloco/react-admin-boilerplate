@@ -1,0 +1,68 @@
+{
+  "name": "admin-crianzasalud",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@feathersjs/authentication-client": "github:feathersjs/authentication-client",
+    "@feathersjs/client": "^4.4.3",
+    "@feathersjs/feathers": "^4.4.3",
+    "@feathersjs/rest-client": "^4.4.3",
+    "@material-ui/lab": "^4.0.0-alpha.45",
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "antd": "^3.26.12",
+    "clsx": "^1.0.4",
+    "connected-react-router": "^6.6.1",
+    "currency-formatter": "^1.5.5",
+    "draft-js": "^0.11.4",
+    "final-form-arrays": "^3.0.2",
+    "history": "^4.10.1",
+    "jsonexport": "^2.4.1",
+    "material-ui-color-picker": "^3.4.0",
+    "material-ui-image": "^3.2.3",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.31",
+    "pretty-bytes": "^5.3.0",
+    "ra-data-feathers": "^2.5.0",
+    "ra-data-json-server": "^3.1.2",
+    "ra-input-rich-text": "^3.3.1",
+    "ra-language-english": "^3.1.0",
+    "ra-tree-language-english": "^2.9.8",
+    "ra-tree-ui-materialui": "^2.9.8",
+    "react": "^16.12.0",
+    "react-admin": "^3.1.2",
+    "react-dom": "^16.12.0",
+    "react-draft-wysiwyg": "^1.14.4",
+    "react-final-form": "^6.3.5",
+    "react-loadable": "^5.5.0",
+    "react-router-dom": "^5.1.2",
+    "react-s3-uploader": "^4.9.0",
+    "react-scripts": "3.3.0",
+    "react-spring": "^8.0.27",
+    "react-uuid": "^1.0.2",
+    "styled-components": "^5.1.0",
+    "video-react": "^0.14.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
