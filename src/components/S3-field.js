@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import S3Uploader from "react-s3-uploader";
 import { Progress } from "antd";
-import { URL_S3 } from "../constants/";
+import { URL_S3, URL_BASE } from "../constants/";
 class App extends Component {
   state = {
     progress: null,
@@ -89,7 +89,7 @@ class App extends Component {
             uploadRequestHeaders={{ "x-amz-acl": "public-read" }} // this is the default
             contentDisposition="auto"
             scrubFilename={(filename) => filename.replace(/[^\w\d_\-.]+/gi, "")}
-            server="https://api.apparta.co"
+            server={URL_BASE}
             // inputRef={cmp => this.uploadInput = cmp}
             autoUpload={true}
             className="s3-uploader"

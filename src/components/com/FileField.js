@@ -2,10 +2,11 @@ import React, { Component } from "react";
 // import { notification , message, Icon } from 'antd';
 import { withRouter } from "react-router-dom";
 import S3Uploader from "react-s3-uploader";
-import { Progress } from "antd";
-import { URL_S3 } from "../../constants/";
+import { Progress, message } from "antd";
+import { URL_S3, URL_BASE } from "../../constants/";
 import styled from "styled-components";
-
+import qs from "qs";
+import { v4 as uuidv4 } from 'uuid';
 import { getService } from "../../services/"
 const WrapperImage = styled.div`
   margin: 0px auto;
@@ -27,6 +28,7 @@ const FileWrapper = styled.div`
 class FileField extends Component {
   state = {
     progress: null,
+    autoSave: true,
     reference: null,
     file: {},
     image: null,
@@ -51,7 +53,11 @@ class FileField extends Component {
 
   }
   componentWillReceiveProps(nextprops) {
-    let { source, record, reference } = nextprops;
+    let { source, record, reference, autoSave } = nextprops;
+    if (typeof autoSave != "undefined")
+      this.setState({
+        autoSave
+      });
     if (!reference) {
       if (nextprops.image)
         this.setState({
@@ -66,6 +72,29 @@ class FileField extends Component {
         this.setState({
           image: record[source]
         });
+    }
+  }
+
+  save = (url, file, id) => {
+    let { match, source, resource, location, history, name } = this.props;
+    let { autoSave } = this.state;
+    //return alert(`${source} ${id} ${resource} ${autoSave}`)
+    if (autoSave && source) {
+      /* let { id } = match.params; */
+
+      if (id && resource) {
+        const service = getService(resource);
+        service.patch(id, {
+          [name || source]: url
+        })
+          .then(response => {
+            message.success("Foto cargada con éxito!");
+            this.setState({
+              image: url
+            });
+          })
+          .catch(error => message.error(error.message));
+      }
     }
   }
   onUploadStart = (file, next) => {
@@ -90,16 +119,18 @@ class FileField extends Component {
     this.setState({
       image: files.fileKey
     });
+    this.save(files.fileKey, file, params.id || this.props.id);
     if (this.props.onFinish)
       this.props.onFinish(files.fileKey, file, params.id || this.props.id);
   };
 
   render() {
-    const { file = {}, match, path, finalPath, data = {}, idKey = "id" } = this.props;
+    let { file = {}, match, path, finalPath, data = {}, idKey = "id", resource } = this.props;
     const { progress, image } = this.state;
     let pathNew = null;
     if (match) {
-      const id = match.params.id || data[idKey] || this.props.id;
+      const id = match.params.id || data[idKey] || this.props.id || uuidv4();
+      path = path || resource || "images";
       if (this.props.finalPath) {
         pathNew = `${path}/${id}/${finalPath}`;
       } else {
@@ -119,14 +150,14 @@ class FileField extends Component {
         {image ? (
           <WrapperImage>
             <img
-              src={`${URL_S3}${image}`}
+              src={`${URL_S3}/${image}`}
               className="custom-img-field"
             />
           </WrapperImage>
         ) : null}
         {(progress > 0 && progress < 100) && <Progress percent={progress} status="active" />}
         <label
-          htmlFor={this.props.idComponent}
+          htmlFor={this.props.idComponent || this.props.source}
           className="flat-button-file"
           variant="outlined"
           color="primary"
@@ -135,7 +166,7 @@ class FileField extends Component {
         </label>
         <label className="s3Button">
           <S3Uploader
-            id={this.props.idComponent}
+            id={this.props.idComponent || this.props.source}
             signingUrl="/s3Client/sign"
             signingUrlMethod="GET"
             accept="*/*"
@@ -149,7 +180,7 @@ class FileField extends Component {
             uploadRequestHeaders={{ "x-amz-acl": "public-read" }} // this is the default
             contentDisposition="auto"
             scrubFilename={(filename) => filename.replace(/[^\w\d_\-.]+/gi, "")}
-            server="https://api.apparta.co"
+            server={URL_BASE}
             // inputRef={cmp => this.uploadInput = cmp}
             autoUpload={true}
             className="s3-uploader"

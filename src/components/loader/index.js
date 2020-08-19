@@ -9,7 +9,7 @@ const Loader = styled.div`
   height: 100vh;
   z-index: 1035;
 
-  background-color: var(--primary);
+  background-color: var(--primary-color);
   box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2);
 
   & .loader-track {

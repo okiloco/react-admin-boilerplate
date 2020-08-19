@@ -16,4 +16,20 @@
   margin: 5px;
   padding: 0px;
 }
-
+.item-inline .ant-form-item {
+  display: flex;
+  justify-content: start;
+  align-items: center;
+}
+.item-inline .ant-form-item-label {
+  padding: 0px 8px 0px 0px!important;
+}
+@media(max-width:475px){
+  .item-inline .ant-form-item {
+    display: block;
+  }
+  .item-inline .ant-form-item-label {
+    padding: 4px 0px!important;
+    margin: 4px 0px;
+  }
+}

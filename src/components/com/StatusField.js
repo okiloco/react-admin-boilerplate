@@ -39,26 +39,27 @@ const Wrapper = styled.div`
         color: #fff!important;
     }
 `;
-const StatusField = ({ label, record, ...props }) => {
+const StatusField = ({ label, reference, ...props }) => {
     let { source, children } = props;
     const [status, setStatus] = useState();
     const [initialized, setInitialized] = useState(false);
-    const [new_record, setNewRecord] = useState();
+    const [record, setNewRecord] = useState(props.record);
 
     useEffect(() => {
+        let { record } = props;
         if (!initialized && record) {
 
             setStatus(record[source]);
             record[source] = record[source] == "active" ? "Activo" : (record[source] == "inactive" || record[source] == "disabled") ? "Inactivo" : record[source];
-            setNewRecord(record);
             setInitialized(true);
         }
-    }, [])
+        setNewRecord(record);
+    }, [props.record])
     return (
-        <Wrapper className={`tag-status ${status}`} {...props}>
+        <Wrapper className={`tag-status ${record[source]}`} {...props}>
             {!children && initialized && <ChipField
                 {...props}
-                record={new_record}
+                record={record}
                 style={{
                     background: record.color,
                     color: "#fff"

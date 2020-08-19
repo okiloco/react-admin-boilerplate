@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
     /* Fields */
     StatusField,
@@ -8,8 +8,7 @@ import {
     /* Input */
     StatusSelectInput,
     FileField
-
-} from "../"
+} from "../";
 import {
     /* Fields */
     TextField,
@@ -17,32 +16,33 @@ import {
     NumberField,
     SelectField,
     DateField,
-
+    ReferenceArrayField,
+    SingleFieldList,
+    ChipField,
     /* Inputs */
     TextInput,
     ReferenceInput,
     SelectInput,
     NumberInput,
     DateInput,
+    ReferenceArrayInput,
+    SelectArrayInput,
     FileInput,
-
 } from "react-admin";
 import RichTextInput from 'ra-input-rich-text';
-
-
+import { money, decimal } from "../../../utils/Helper";
+import { HiddenField } from "./Styles";
 const CustomEl = ({ record, ...rest }) => {
     return <>
-        {rest.render(record[rest.name], record)}
+        {record && rest.render(record[rest.name || rest.source], record)}
     </>
 }
 
-
-const optionRenderer = choice => `${choice.first_name} ${choice.last_name}`;
+const renderFullName = (firstName, lastName) => (`${firstName || ""} ${lastName || ""}`)
 const Factory = ({ input, ...field }) => {
     let xtype = input ?
         field.xtype ?
             field.xtype.replace("field", "input") : field.xtype : field.xtype;
-    let el;
     switch (xtype) {
         case 'textfield':
             if (field.reference) {
@@ -73,25 +73,6 @@ const Factory = ({ input, ...field }) => {
                 label={field.text || field.label}
             />
             break;
-        case 'customfield':
-
-            return <CustomEl {...field} />;
-            if (field.content) {
-                return React.cloneElement(field.content, field);
-            }
-            if (field.reference) {
-                return <ReferenceField
-                    /* target={"_id"} */
-                    {...field}>
-                    <CustomField {...field} />
-                </ReferenceField>
-            }
-            return <CustomField
-                {...field}
-                source={field.dataIndex || field.source}
-                label={field.text || field.label}
-            />
-            break;
         case 'textfield':
             return <TextField
                 {...field}
@@ -108,17 +89,27 @@ const Factory = ({ input, ...field }) => {
             break;
         case 'statusfield':
             return <StatusField
-                {...field}
                 source={field.dataIndex || field.source}
                 label={field.text || field.label}
+                {...field}
             />
             break;
         case 'selectfield':
+
+            if (field.multiple && field.reference) {
+                return <ReferenceArrayField label={field.label} reference={field.reference} source={field.source}>
+                    <SingleFieldList>
+                        <ChipField source={field.optionText || "name"} />
+                    </SingleFieldList>
+                </ReferenceArrayField>
+            }
             if (field.reference) {
                 return <ReferenceField
+                    {...field}
                     label={field.text || field.label}
                     source={field.dataIndex || field.source}
-                    reference={field.reference}>
+                    reference={field.reference}
+                >
                     <TextField source={field.optionText || "name"} />
                 </ReferenceField>
             }
@@ -138,6 +129,79 @@ const Factory = ({ input, ...field }) => {
         case 'richtextfield':
             return <DateField
                 {...field}
+            />
+            break;
+        /* Commons Fields */
+        case 'customfield':
+            return <CustomEl {...field} />;
+            if (field.content) {
+                return React.cloneElement(field.content, field);
+            }
+            if (field.reference) {
+                return <ReferenceField
+                    /* target={"_id"} */
+                    {...field}>
+                    <CustomField {...field} />
+                </ReferenceField>
+            }
+            return <CustomField
+                {...field}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+            />
+            break;
+        case 'percentfield':
+            if (field.reference) {
+                return <ReferenceField
+                    {...field}
+                >
+                    <CustomField {...field}
+                        render={(value, record) => `${value}%`} />
+                </ReferenceField>
+            }
+            return <CustomField
+                {...field}
+                render={(value, record) => `${value}%`}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+            />
+            break;
+        case 'moneyfield':
+            return <CustomEl
+                {...field}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+                render={(value, record) => (`${money(value)}`)}
+            />
+            break;
+        case 'decimalfield':
+            return <CustomEl
+                {...field}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+                render={(value, record) => (`${decimal(value)}`)}
+            />
+            break;
+        case 'fullnamefield':
+            if (field.reference) {
+                return <ReferenceField
+                    {...field}>
+                    <CustomField {...field}
+                        render={(value, record) => renderFullName(
+                            value || record[field.first_name || "first_name"],
+                            record[field.last_name || "last_name"],
+                        )}
+                    />
+                </ReferenceField>
+            }
+            return <CustomField
+                {...field}
+                render={(record) => renderFullName(
+                    record[field.first_name || "first_name"],
+                    record[field.last_name || "last_name"],
+                )}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
             />
             break;
         /* Inputs */
@@ -160,6 +224,9 @@ const Factory = ({ input, ...field }) => {
                     source={field.source}
                     label={field.label}
                     reference={field.reference}
+                    perPage={field.perPage}
+                    sort={field.sort}
+                    filter={field.filter}
                 >
                     <SelectInput
                         style={field.style}
@@ -170,13 +237,11 @@ const Factory = ({ input, ...field }) => {
                 </ReferenceInput>
 
             }
-
-            console.log("INPUT:: ", field)
             return <TextInput
                 {...field}
                 disabled={field.disabled}
                 source={field.dataIndex || field.source}
-                label={field.text || field.label}
+                label={field.label || field.text || ""}
             />
             break;
         case 'statusinput':
@@ -230,6 +295,15 @@ const Factory = ({ input, ...field }) => {
             />
             break;
         case 'selectinput':
+
+            if (field.multiple && field.reference) {
+                return <ReferenceArrayInput source={field.source} reference={field.reference}>
+                    <SelectArrayInput
+                        optionText={field.optionText || "name"}
+                        optionValue={field.optionValue || "id"}
+                        {...field} />
+                </ReferenceArrayInput>
+            }
             if (field.reference) {
                 return <ReferenceInput
                     {...field}>
@@ -269,7 +343,16 @@ const Factory = ({ input, ...field }) => {
             }
             return <FileField
                 {...field}
-                source={field.name || "path"}
+                source={field.name || field.source || "path"}
+            />
+            break;
+        /* Commons Inputs */
+        case 'hiddeninput':
+            return <HiddenField
+                type="hidden"
+                {...field}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label || ""}
             />
             break;
         case 'custominput':
@@ -279,8 +362,38 @@ const Factory = ({ input, ...field }) => {
                 source={field.source || field.dataIndex}
                 label={field.label || field.text}
             />
-        default:
+        case 'moneyinput':
+            if (field.reference) {
+                return <ReferenceInput
+                    {...field}>
+                    <SelectInput optionText={field.name || "name"} />
+                </ReferenceInput>
+            }
+            return <NumberInput
+                {...field}
+                format={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parse={value => value.replace(/\$\s?|(,*)/g, '')}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+            />
+            break;
+        case 'percentinput':
+            if (field.reference) {
+                return <ReferenceInput
+                    {...field}>
+                    <SelectInput optionText={field.name || "name"} />
+                </ReferenceInput>
+            }
+            return <NumberInput
+                {...field}
+                format={value => `${value}%`}
+                parse={value => value.replace('%', '')}
+                source={field.dataIndex || field.source}
+                label={field.text || field.label}
+            />
+            break;
 
+        default:
             return input ? <TextInput
                 {...field}
                 source={field.dataIndex || field.source}

@@ -1,6 +1,5 @@
 import React from "react";
 import CRUD from '../../components/com/crud/CRUD';
-
 const columns = [
     {
         xtype: "textfield",
@@ -9,23 +8,24 @@ const columns = [
     },
     {
         xtype: "textfield",
-        source: 'name',
+        source: "name",
+        fullWidth: true,
+        filter: true,
         label: "Nombre"
-    },
+    }
 ];
 const fields = [
     {
         xtype: "textfield",
-        source: 'name',
+        source: "name",
         fullWidth: true,
         label: "Nombre"
     }
-]
+];
 const Cities = props => {
-
     return <CRUD
-        redirect
-        actions={{ "delete": false, show: true, delete: true }}
+        title="Cuidades"
+        actions={{ "delete": false }}
         columns={columns}
         fields={fields}
     />

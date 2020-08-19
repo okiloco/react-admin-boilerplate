@@ -69,17 +69,17 @@ const Avatar = ({ source, size = "default", type = "cover", record, src, shape =
     if (record && source) {
         value = record[source];
         value = typeof record[source] == "object" ?
-            record[source] ?
-                record[source][props.name || "path"] : record[source] : undefined;
+            record[source] ? record[source][props.name || "path"] : null
+            : record[source];
     }
     useEffect(() => {
         let url =
             src ?
-                `${URL_S3}${src}` :
+                `${URL_S3}/${src}` :
                 value ?
                     value
                         ?
-                        `${URL_S3}${value}` : DEFAULT_IMAGE : DEFAULT_AVATAR_IMAGE;
+                        `${URL_S3}/${value}` : DEFAULT_IMAGE : DEFAULT_AVATAR_IMAGE;
         setUrl(url);
     }, [src])
     return (

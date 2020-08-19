@@ -7,14 +7,14 @@ import {
     ReferenceField,
     EditButton,
     ShowButton,
-    DeleteButton
+    DeleteButton,
+    Filter
 } from "react-admin";
 import { Route, withRouter } from "react-router-dom";
 /* import { Drawer } from "antd"; */
 import { Drawer } from '@material-ui/core';
 
 
-import Loadeable from "react-loadable";
 
 
 import ShoWView from "./showView";
@@ -67,6 +67,8 @@ const ListActions = ({
     children,
     createButtonText,
     actions = {},
+    mode,
+    onCreate,
     ...rest
 }) => (
         <TopToolbar className={className} {...sanitizeListRestProps(rest)}>
@@ -77,7 +79,7 @@ const ListActions = ({
                 filterValues,
                 context: 'button',
             })}
-            {(typeof actions.create != "undefined" ? actions.create : true) && <CreateButton label={createButtonText || "Agregar"} basePath={basePath} />}
+            {(actions.create && mode == "sidebar" ? actions.create : true) && <CreateButton label={createButtonText || "Agregar"} basePath={basePath} />}
             {actions.export && <ExportButton
                 disabled={total === 0}
                 resource={resource}
@@ -86,14 +88,35 @@ const ListActions = ({
                 exporter={exporter}
                 maxResults={maxResults}
             />}
+            {actions.create && mode == "form" ? <Button onClick={onCreate} label={createButtonText || "Agregar"} basePath={basePath} /> : null}
             {/* Add your custom  actions */}
+            {
+                actions.props &&
+                <React.Fragment fullWidth>
+                    {React.cloneElement(actions, {
+                        fullWidth: true
+                    })}
+                </React.Fragment>
+            }
             {children}
         </TopToolbar>
     );
-const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ...props }) => {
+
+const CustomFilters = ({ filters, ...props }) => {
+    return <Filter {...props}>
+        {
+            filters.map(({ props }) => (<Factory
+                {...props}
+                alwaysOn={props.filter}
+                input={true} />))
+        }
+    </Filter>
+}
+const CRUD = ({ children, defaultValues, actions, redirect, onCreate, mode = "sidebar", ...props }) => {
     const [columns, setColumns] = useState([]);
     const [resource, setResource] = useState();
     const [open, setOpen] = useState(true);
+    const [action, setAction] = useState();
     const [tools, setToolActions] = useState({
         edit: true,
         delete: true,
@@ -134,6 +157,8 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
             getColumns();
         }
         setOpen(true);
+        let action = pathname.substring(pathname.lastIndexOf("/") + 1, pathname.length);
+        setAction(action);
     }, [actions, props.location, props.columns])
     if (!resource) {
         return "Loading";
@@ -150,21 +175,29 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
         }
 
     }
+    const handleActions = (action) => {
+        setAction(action);
+    }
     return (<div>
         <Wrapper>
             {mode == "sidebar" ? <Route path={props.path || `/${resource}/:id`}>
-                {({ match }) => {
+                {({ match, location }) => {
                     let isMatch = (
                         match &&
                         match.params
                     );
+                    if (isMatch && action == "show" && props.show) return;
                     return (
                         <Fragment>
                             {props.title && <HeadLine>{props.title}</HeadLine>}
+                            {props.tools && <TopToolbar style={{
+                                justifyContent: "start"
+                            }}>
+                                {props.tools}
+                            </TopToolbar>}
                             <List
-                                {...props}
                                 className="dinamic-list"
-                                filters={props.filters && props.filters}
+                                filters={props.filters ? props.filters : <CustomFilters filters={columns.filter(({ props }) => (props.filter))} />}
                                 exporter={false}
                                 hasCreate={true}
                                 bulkActionButtons={false}
@@ -173,19 +206,19 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
                                 resource={resource}
                                 actions={<ListActions
                                     createButtonText={props.createButtonText}
-                                    actions={props.tools}
+                                    actions={props.extra}
                                 />}
-                                sort={props.sort}
+                                {...props}
                             >
                                 <Datagrid /* rowClick="edit" */ optimized {...props}>
                                     {columns}
-                                    {tools.edit && <EditButton label={false} />}
-                                    {tools.delete && <DeleteButton label={false} />}
-                                    {tools.show && <ShowButton label={false} />}
+                                    {tools.edit && <EditButton onClick={() => handleActions("edit")} label={false} />}
+                                    {tools.delete && <DeleteButton onClick={() => handleActions("delete")} label={false} />}
+                                    {tools.show && <ShowButton onClick={() => handleActions("show")} label={false} />}
                                     {Array.isArray(actions) && actions}
                                 </Datagrid>
                             </List>
-                            {open && <Drawer
+                            {open && isMatch && action != "show" && <Drawer
                                 className="dinamic-drawer"
                                 destroyOnClose
                                 closable={false}
@@ -198,10 +231,9 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
                                 open={isMatch}
                                 anchor="right"
                             >
-                                {isMatch && match.params.id != "create" ? (
+                                {isMatch && match.params.id != "create" ? (<>
                                     <EditView
                                         /*  className={classes.drawerContent} */
-                                        {...props}
                                         id={isMatch ? match.params.id : null}
                                         onCancel={handleClose}
                                         title={props.editTitle}
@@ -210,12 +242,66 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
                                         mode={mode}
                                         fields={props.fields || props.columns}
                                         resource={resource}
+                                        {...props}
                                     />
-                                ) :
-                                    isMatch && match.params.action == "show" ? (
-                                        <ShoWView
+                                </>) :
+                                    isMatch && match.params.id == "create" && (
+                                        <CreateView
                                             /*  className={classes.drawerContent} */
+                                            id={isMatch ? match.params.id : null}
+                                            onCancel={handleClose}
+                                            basePath={props.basePath || `/${resource}`}
+                                            resource={resource}
+                                            redirect={redirect}
+                                            defaultValues={defaultValues}
+                                            mode={mode}
                                             {...props}
+                                        />
+                                    )}
+                            </Drawer>}
+                        </Fragment>
+                    );
+                }}
+            </Route> : mode == "form" ?
+                    <>
+                        {props.title && <HeadLine>{props.title}</HeadLine>}
+                        <List
+                            className="dinamic-list"
+                            filters={props.filters && props.filters}
+                            exporter={false}
+                            hasCreate={true}
+                            bulkActionButtons={false}
+                            filterDefaultValues={props.filterDefaultValues}
+                            basePath={props.basePath || `/${resource}`}
+                            resource={resource}
+                            actions={<ListActions
+                                mode={mode}
+                                createButtonText={props.createButtonText}
+                                actions={props.tools}
+                            />}
+                            {...props}
+                        >
+                            <Datagrid /* rowClick="edit" */ optimized {...props}>
+                                {columns}
+                                {tools.edit && <EditButton label={false} />}
+                                {tools.delete && <DeleteButton label={false} />}
+                                {tools.show && <ShowButton label={false} />}
+                                {Array.isArray(actions) && actions}
+                            </Datagrid>
+                        </List>
+                    </> : null}
+            {props.show && <Route path={props.path || `/${resource}/:id/:action`}>
+                {({ match }) => {
+                    let isMatch = (
+                        match &&
+                        match.params
+                    );
+                    return (
+                        <Fragment>
+                            {
+                                isMatch && match.params.action == "show" && (
+                                    <>
+                                        <ShoWView
                                             id={isMatch ? match.params.id : null}
                                             onCancel={handleClose}
                                             title={props.editTitle}
@@ -223,52 +309,19 @@ const CRUD = ({ children, defaultValues, actions, redirect, mode = "sidebar", ..
                                             redirect={redirect}
                                             defaultValues={defaultValues}
                                             mode={mode}
-                                            show={React.cloneElement(props.show, {
+                                            show={props.show && React.cloneElement(props.show, {
                                                 ...props
                                             })}
                                             fields={props.fields || props.columns}
                                             resource={resource}
+                                            {...props}
                                         />
-                                    ) :
-                                        (
-                                            <CreateView
-                                                /*  className={classes.drawerContent} */
-                                                id={isMatch ? match.params.id : null}
-                                                onCancel={handleClose}
-                                                basePath={props.basePath || `/${resource}`}
-                                                resource={resource}
-                                                redirect={redirect}
-                                                defaultValues={defaultValues}
-                                                mode={mode}
-                                                {...props}
-                                            />
-                                        )}
-                            </Drawer>}
-                        </Fragment>
-                    );
+                                    </>
+                                )
+                            }
+                        </Fragment>)
                 }}
-            </Route> :
-                <>
-                    {props.title && <HeadLine>{props.title}</HeadLine>}
-                    <List
-                        className="dinamic-list"
-                        exporter={false}
-                        hasCreate={true}
-                        bulkActionButtons={false}
-                        basePath={`/${resource}`}
-                        resource={resource}
-                        {...props}
-                    >
-                        <Datagrid /* rowClick="edit" */ optimized {...props}>
-                            {columns}
-                            {tools.edit && <EditButton label={false} />}
-                            {tools.delete && <DeleteButton label={false} />}
-                            {tools.show && <ShowButton label={false} />}
-                            {Array.isArray(actions) && actions}
-                        </Datagrid>
-                    </List>
-
-                </>}
+            </Route>}
         </Wrapper>
     </div>
     )

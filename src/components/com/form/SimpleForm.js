@@ -127,7 +127,7 @@ const Form = styled(AdvancedForm)`
   }
   & .ant-form-item label {
     position: relative !important;
-    font-style: italic !important;
+    /* font-style: italic !important; */
     color: #bfbfbf !important;
   }
   
@@ -198,14 +198,14 @@ const Form = styled(AdvancedForm)`
     border-radius: 4px!important;
   }
 
-  /* .ant-time-picker-panel-select ul,
-  .ant-time-picker-panel-input{
-    width: 100%!important;
+  & .ant-switch{
+    width:auto!important;
   }
-  .ant-time-picker-panel-select,
-  .ant-time-picker-panel-input-wrap{
-    width: 50%!important;
-  } */
+
+  & .submit-container{
+    display:flex!important;
+    justify-content: center;
+  }
 
 `;
 const HeadLine = styled.div`
@@ -255,7 +255,8 @@ export const SimpleForm = ({
             resolve(rest);
             setInitialValues();
             setRecord();
-            if (props.onAfterSubmit) props.onAfterSubmit(rest);
+
+            if (onSubmit) onSubmit(rest);
           })
           .catch(err => {
             reject(err);
@@ -269,6 +270,7 @@ export const SimpleForm = ({
           resolve(rest);
           setInitialValues();
           setRecord();
+          if (onSubmit) onSubmit(rest);
         })
         .catch(err => {
           reject(err);
@@ -297,7 +299,6 @@ export const SimpleForm = ({
     if (autoSubmit) {
       if (err) return;
       const response = await save(data);
-      if (onSubmit) onSubmit(err, response, form);
     } else {
       if (onSubmit) onSubmit(err, data, form);
     }
@@ -318,14 +319,13 @@ export const SimpleForm = ({
       autoSubmit={autoSubmit}
       layout={layout}
       formLayout={layout}
-      autoSubmit={autoSubmit}
       initialValues={initialValues}
-      textAcceptButton={textAcceptButton || "AGREGAR"}
-      footer={
+      textAcceptButton={textAcceptButton || id ? "GUARDAR" : "AGREGAR"}
+      /* footer={
         <Footer type="flex" justify="center" align="middle">
           {footer}
         </Footer>
-      }
+      } */
       title={
         title && (
           <HeadLine

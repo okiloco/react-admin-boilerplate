@@ -7,8 +7,8 @@ import Api from "./utils/Api";
 import englishMessages from "ra-language-english";
 import treeEnglishMessages from "ra-tree-language-english";
 /* import UserList from "./pages/users/UserList"; */
-import ShowCities from "./pages/cities/ShowCities";
-import Cities from "./pages/cities/Cities";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import routes from "./routes.js";
 import Layout from "./layouts/Layout";
 const messages = {
@@ -27,18 +27,31 @@ const authClientOptions = {
   redirectTo: "/login",
 };
 const history = createHashHistory();
+const Default = () => (<>Feature Component</>);
 //const App = () => <Admin dataProvider={dataProvider} />;
+const getRoutes = (routes, parent) => {
+  return routes.map(route => {
+    if (parent && !route.list) {
+      route.list = parent.list || Default;
+    } else {
+      if (!route.children)
+        route.list = route.list || Default;
+    }
+    if (typeof route.children != "undefined")
+      return getRoutes(route.children, route);
+    return <Resource {...route} />
+  })
+}
 const App = () => (
   <Admin
     dataProvider={restClient(Api, restClientOptions)}
     authProvider={authClient(Api, authClientOptions)}
     history={history}
     appLayout={Layout}
-    /* i18nProvider={i18nProvider} */
     locale="en"
   >
     {
-      routes.map(route => (<Resource {...route} />))
+      getRoutes(routes)
     }
   </Admin>
 );

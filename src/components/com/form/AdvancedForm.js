@@ -87,6 +87,7 @@ class AdvancedForm extends Component {
           let {
             name,
             label,
+            labelAlign,
             help,
             required,
             message,
@@ -180,6 +181,7 @@ class AdvancedForm extends Component {
           if (!child.type || typeof child == "undefined") {
             return null;
           };
+          /* if(labelAlign) alert(labelAlign) */
           return (
             <Col
               {...formItemLayout}
@@ -189,12 +191,15 @@ class AdvancedForm extends Component {
                 typeof child.className !== "undefined"
                   ? "item-form " + child.className
                   : "item-form"
-                } ${type === "hidden" ? "item-hidden" : ""}`}
+                } ${type === "hidden" ? "item-hidden" : ""} ${labelAlign ? "item-inline" : ""}`}
             >
-              <Form.Item label={label} hasFeedback={reference != null}
+              <Form.Item label={label}
+                labelAlign={labelAlign}
+                hasFeedback={reference != null}
                 help={help}
               >
                 {getFieldDecorator(name || `field-${index}`, {
+                  labelAlign: labelAlign,
                   initialValue: initialValue || initial,
                   /*  trigger: "focus", */
                   validateTrigger: "onChange",
@@ -202,12 +207,8 @@ class AdvancedForm extends Component {
                   valuePropName: "value",
 
                   rules: validations,
-                  onSelect: function (value) {
-                    alert(value);
-                  },
                   onChange: function (key, value) {
                     let { form } = me.props;
-
                     if (xtype === "map") {
                       /*  let { latName = "lat", lngName = "lng" } = child.props; */
                       value = key;
@@ -258,7 +259,7 @@ class AdvancedForm extends Component {
                       ...form.getFieldsValue(),
                       [name]: value
                     });
-                    console.log(form.getFieldsValue())
+                    //console.log(form.getFieldsValue())
 
                     me.setState({
                       record: form.getFieldsValue()
@@ -317,74 +318,78 @@ class AdvancedForm extends Component {
       >
         {title && <HeadTitle className="head-title">{title}</HeadTitle>}
         <Row gutter={24}>{this.getFields()}</Row>
-        <Row
-          className={
-            typeof footer !== "undefined" ? "footer-advanced-form" : null
-          }
-        >
-          {autoSubmit ? (
-            <>
-              <Row type="flex" justify="center" align="middle">
-                {formLayout == "vertical" && <Col span={24}>
-                  <Divider
-                    style={{
-                      width: "100%",
-                      margin: "20px 0px 20px 0px"
-                    }}
-                  />
-                </Col>}
-                <Col span={24}>
-                  <Button
-                    type={this.props.typeSubmitButton || "primary"}
-                    icon={this.props.iconSubmitButton}
-                    loading={submitting}
-                    size="large"
-                    htmlType="submit"
-                    className="login-form-button btn-green"
-                    style={
-                      this.props.buttonSubmitStyle || {
-                        width: "50%",
-                        margin: "10px 0px",
-                        textAlign: "center"
-                      }
-                    }
-                    size="large"
-                    block
-                  >
-                    {textAcceptButton}
-                  </Button>
-                </Col>
-              </Row>
-              <Row
-                style={footerStyle}
-                type="flex"
-                justify="center"
-                align="middle"
-              >
-                <Col span={24}>{footer}</Col>
-                <Col span={24}>
-                  {!autoSubmit && (
+        {
+          typeof footer !== "undefined" || autoSubmit &&
+          <Row
+            className={
+              typeof footer !== "undefined" ? "footer-advanced-form" : null
+            }
+          >
+            {autoSubmit ? (
+              <>
+                <Row type="flex" justify="center" align="middle">
+                  {formLayout == "vertical" && <Col span={24}>
                     <Divider
                       style={{
                         width: "100%",
                         margin: "20px 0px 20px 0px"
                       }}
                     />
-                  )}
-                </Col>
-              </Row>
-            </>
-          ) : (
-              <Row
-                style={footerStyle}
-                type="flex"
-                justify="center"
-                align="middle"
-              >
-                <Col span={24}>{footer}</Col>
-              </Row>
-            )}
-        </Row>
+                  </Col>}
+                  <Col className="submit-container" span={24}>
+                    <Button
+                      type={this.props.typeSubmitButton || "primary"}
+                      icon={this.props.iconSubmitButton}
+                      loading={submitting}
+                      size="large"
+                      htmlType="submit"
+                      className="login-form-button btn-green"
+                      style={
+                        this.props.buttonSubmitStyle || {
+                          width: "50%",
+                          margin: "10px 0px",
+                          textAlign: "center"
+                        }
+                      }
+                      size="large"
+                      block
+                    >
+                      {textAcceptButton}
+                    </Button>
+                  </Col>
+                </Row>
+                <Row
+                  style={footerStyle}
+                  type="flex"
+                  justify="center"
+                  align="middle"
+                >
+                  <Col span={24}>{footer}</Col>
+                  <Col span={24}>
+                    {!autoSubmit && (
+                      <Divider
+                        style={{
+                          width: "100%",
+                          margin: "20px 0px 20px 0px"
+                        }}
+                      />
+                    )}
+                  </Col>
+                </Row>
+              </>
+            ) : (
+                <Row
+                  style={footerStyle}
+                  type="flex"
+                  justify="center"
+                  align="middle"
+                >
+                  <Col span={24}>{footer}</Col>
+                </Row>
+              )}
+          </Row>
+
+        }
       </Form>
     );
   }

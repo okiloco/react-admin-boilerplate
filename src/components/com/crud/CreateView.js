@@ -17,7 +17,7 @@ import {
 
 const FormContainer = styled.div`
     min-width:400px;
-    min-height:100vh;
+    /* min-height:100vh; */
 
     padding:0px;
     margin:0px;
@@ -80,6 +80,7 @@ const CreateView = (props) => {
         save, // the create callback, to be passed to the underlying form as submit handler
         saving, // boolean that becomes true when the dataProvider is called to create the record
         version, // integer used by the refresh feature
+        mode
     } = useCreateController(props);
     let { onCancel, editform, permissions, primaryKey = "id", defaultValues } = props;
     const history = useHistory();

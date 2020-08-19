@@ -4,11 +4,6 @@ import CRUD from '../../components/com/crud/CRUD';
 const columns = [
     {
         xtype: "textfield",
-        source: "id",
-        label: "ID"
-    },
-    {
-        xtype: "textfield",
         source: "title",
         fullWidth: true,
         label: "Titulo"
@@ -41,7 +36,7 @@ const fields = [
     },
 
 ];
-const Cities = props => {
+const View = props => {
 
     return <CRUD
         title="CMS"
@@ -50,4 +45,4 @@ const Cities = props => {
         fields={fields}
     />
 }
-export default Cities;
+export default View;
